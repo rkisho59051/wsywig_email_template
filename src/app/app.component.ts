@@ -1,5 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { CKEditor4 } from 'ckeditor4-angular';
+import { Component } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import FroalaEditor from 'froala-editor';
 import "froala-editor/css/third_party/embedly.min.css";
@@ -12,12 +11,7 @@ import "froala-editor/js/third_party/embedly.min.js";
 })
 export class AppComponent {
   title = 'quill-text-editor-integration-admin';
-  // sampleData="This is a Sample Template"
-  // data:any;
-  // datas='';
-  // preview:any;
-  // previousData:any;
-  // latestData:any;
+
   public titleOptions: Object = {
     placeholderText: '',
     charCounterCount: false,
@@ -82,46 +76,31 @@ export class AppComponent {
       },
     });
   }
-  // public onChange( event: CKEditor4.EventInfo ) {
-  //    this.sampleData = event.editor.getData();
-  //    console.log(this.sampleData);
-      // this.preview = this.sampleData;
-    //  document.getElementById('preview').innerHTML = this.sampleData;
-    
-// }
+  save() {
+    console.log(this.myTitle);
+  }
   clear() {
     this.myTitle = '';
   }
  
   getButtonText(key){
     
-    // this.flds[0].doctor_name
-    // debugger;
-    
-    // this.datas = `${this.data} %${item.innerText}%`;
-
-
-    // console.log(this.data);
-    // console.log(Object.keys(this.fields[0]));
-    // this.datas = this.data + Object.keys(this.fields[0]);
       for(var i=0;i<this.fields.length; i++) {
       var fieldObj = this.fields[i]
       for (const property in fieldObj) {
         if(property == key.innerText.toLowerCase()){
            this.actualValue = fieldObj[property];
         }
-        // console.log(`${property}: ${fieldObj[property]}`);
+    
       }
 
     }
-    // document.getElementById('preview').innerHTML = document.getElementById('preview').innerHTML.concat(preview);
-    // this.data = this.data + preview;
+   
     this.myTitle = this.myTitle + `${this.actualValue}`;
-    // console.log(this.myTitle);
+
     console.log(key.name);
     console.log(this.actualValue);
-    
-    // document.getElementById('textBox').innerHTML = `${this.data} ${preview}`;    
+  
   }
 
   // updateText() {if 
@@ -137,7 +116,7 @@ export class AppComponent {
   //     this.templateText.trim();
   //   }
   onChange(change){
-    this.newMyTitle = change;
+    // this.newMyTitle = change;
 
       }
     

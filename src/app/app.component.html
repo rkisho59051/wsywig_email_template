@@ -4,15 +4,13 @@
     <div class="col-md-4 textarea">
       <h2>Email Template</h2>
       <br>
-     
-      <!-- <input type="text" [(ngModel)]="myTitle" (change)="onChange($event)"/> -->
 
       <textarea [(ngModel)]="myTitle" (ngModelChange)="onChange($event)" placeholder="A Sample Template" class="input" rows="13" cols="40"></textarea>
    <button (click)="clear()" class="btn btn-light clear">CLEAR</button>
       
       <br>
       
-      <button class="btn btn-primary save_template" >SAVE TEMPLATE</button>
+      <button class="btn btn-primary save_template" (click)="save()" >SAVE TEMPLATE</button>
       
     </div>
     
