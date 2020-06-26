@@ -19,7 +19,8 @@
       <br>
     
       <!-- <angular-editor  [innerHTML]="templateText | safeHtml"></angular-editor> -->
-       <div [innerHTML]="templateText | safeHtml" class="border bg-light rounded p-2 preview"></div>
+       <!-- <div [innerHTML]="templateText | safeHtml" class="border bg-light rounded p-2 preview"></div> -->
+       <iframe [srcdoc]="templateText | safeHtml" height="400px" width="400px"></iframe>
       
       
     </div>
