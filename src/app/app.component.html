@@ -4,9 +4,9 @@
     <div class="col-md-4 textarea">
       <h2>Email Template</h2>
       <br>
-
-      <textarea [(ngModel)]="myTitle" (ngModelChange)="onChange($event)" placeholder="A Sample Template" class="input" rows="13" cols="40"></textarea>
-   <button (click)="clear()" class="btn btn-light clear">CLEAR</button>
+      <angular-editor  [formControl]="editorData" [config]="editorConfig"></angular-editor>
+     
+   <button (click)="clearText()" class="btn btn-light clear">CLEAR</button>
       
       <br>
       
@@ -17,11 +17,16 @@
     <div class="col-md-4">
       <h2>Preview</h2>
       <br>
-      <div id="sample1" [froalaEditor]="titleOptions" [(froalaModel)]="myTitle"></div>
-     
+    
+      <!-- <angular-editor  [innerHTML]="templateText | safeHtml"></angular-editor> -->
+       <div [innerHTML]="templateText | safeHtml" class="border bg-light rounded p-2 preview"></div>
+      
+      
     </div>
     <div class="col-md-4">
-      <h2>Insert Field</h2><br>
+      <h2>Insert Field</h2>
+     
+      <br>
       <div class="row">
         <div class="col-md-6">
           <button class="btn btn-light" name="doctor_name" #doctor_name (click)="getButtonText(doctor_name)">
@@ -80,5 +85,6 @@
      
     </div>
   </div>
+ 
 
 </div>

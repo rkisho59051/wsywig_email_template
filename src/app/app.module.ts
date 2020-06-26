@@ -9,14 +9,18 @@ import { CKEditorModule } from 'ckeditor4-angular';
 import { FroalaEditorModule } from 'angular-froala-wysiwyg';
 import { FroalaViewModule } from 'angular-froala-wysiwyg';
 import { FroalaComponent } from "./froala.component";
-
+import { HttpClientModule} from '@angular/common/http';
+import { AngularEditorModule } from '@kolkov/angular-editor';
+import { SafeHtmlPipe } from './safe-html.pipe';
+// import { NbSidebarModule, NbLayoutModule, NbSidebarService } from '@nebular/theme';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    FroalaComponent
+    FroalaComponent,
+    SafeHtmlPipe
   ],
   imports: [
     BrowserModule,
@@ -25,9 +29,15 @@ import { FroalaComponent } from "./froala.component";
     ReactiveFormsModule,
     FormsModule,
     FroalaEditorModule,
-    FroalaViewModule
+    FroalaViewModule,
+    AngularEditorModule,
+    HttpClientModule, 
+    // NbSidebarModule,
+    // NbLayoutModule  
   ],
-  providers: [],
+  providers: [
+    // NbSidebarService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

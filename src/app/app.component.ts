@@ -1,42 +1,106 @@
-import { Component } from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import FroalaEditor from 'froala-editor';
-import "froala-editor/css/third_party/embedly.min.css";
-import "froala-editor/js/third_party/embedly.min.js";
+import { Component, ViewEncapsulation, PipeTransform, Pipe } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser'
+import {FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { AngularEditorConfig } from '@kolkov/angular-editor';
+
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
   title = 'quill-text-editor-integration-admin';
 
-  public titleOptions: Object = {
-    placeholderText: '',
-    charCounterCount: false,
-    toolbarInline: true,
-    events: {
-      "initialized": () => {
-        console.log('initialized');
+  
+  editorConfig: AngularEditorConfig = {
+    editable: true,
+      spellcheck: true,
+      height: '13rem',
+      minHeight: '13rem',
+      maxHeight: 'auto',
+      width: 'auto',
+      minWidth: '0',
+      translate: 'yes',
+      enableToolbar: true,
+      showToolbar: true,
+      placeholder: 'A Sample Template',
+      defaultParagraphSeparator: '',
+      defaultFontName: '',
+      defaultFontSize: '',
+      
+      fonts: [
+        {class: 'arial', name: 'Arial'},
+        {class: 'times-new-roman', name: 'Times New Roman'},
+        {class: 'calibri', name: 'Calibri'},
+        {class: 'comic-sans-ms', name: 'Comic Sans MS'}
+      ],
+      customClasses: [
+      {
+        name: 'quote',
+        class: 'quote',
       },
-      "contentChanged": () => {
-        console.log("content changed");
-      }
-    }
-  }
-  public imgOptions: Object = {
-    angularIgnoreAttrs: ['style', 'ng-reflect-froala-editor', 'ng-reflect-froala-model'],
-    immediateAngularModelUpdate: true,
-    events: {
-      "contentChanged": () => {
-      }
-    }
-  }
+      {
+        name: 'redText',
+        class: 'redText'
+      },
+      {
+        name: 'titleText',
+        class: 'titleText',
+        tag: 'h1',
+      },
+    ],
+    uploadUrl: '',
+    uploadWithCredentials: false,
+    sanitize: true,
+    toolbarPosition: 'top',
+    
+    
+};
+toolbarHiddenButtons: [
+  [
+    'undo',
+    'redo',
+    'bold',
+    'italic',
+    'underline',
+    'strikeThrough',
+    'subscript',
+    'superscript',
+    'justifyLeft',
+    'justifyCenter',
+    'justifyRight',
+    'justifyFull',
+    'indent',
+    'outdent',
+    'insertUnorderedList',
+    'insertOrderedList',
+    'heading',
+    'fontName'
+  ],
+  [
+    'fontSize',
+    'textColor',
+    'backgroundColor',
+    'customClasses',
+    'link',
+    'unlink',
+    'insertImage',
+    'insertVideo',
+    'insertHorizontalRule',
+    'removeFormat',
+    'toggleEditorMode'
+  ]
+]
+
   public content: string = '<span>My Document\'s Title</span>';
-  public myTitle: string ='';
-  public newMyTitle:string = '';
-  public actualValue: string = '';
+  editorData = new FormControl(null);
+  templateText: string = null;
+  templateType: string;
+  
 
   fields = [
     {"doctor_name":"Dr.Will Smith"},
@@ -51,74 +115,65 @@ export class AppComponent {
   ];
   constructor() { }
   ngOnInit () {
+    // debugger;
+    this.editorData.valueChanges
+    .pipe(debounceTime(100), distinctUntilChanged())
+    .subscribe((v) => this.updateText());
     
-    FroalaEditor.DefineIcon('alert', { SVG_KEY: 'help' });
-    FroalaEditor.RegisterCommand('alert', {
-      title: 'Giphy',
-      icon: 'giphyIcon',
-      undo: true,
-      popup: true,
-      plugin: 'giphyPlugin',
-      showOnMobile: true,
-      refreshAfterCallback: true,
-      callback: function () {
-        /* Toggle the giphy button */
-        if (!this.popups.isVisible('giphyPlugin.popup')) {
-          this.giphyPlugin.showPopup();
-          this.$tb.find("input.giphy_search_field").focus()
-        } else {
-          if (this.$el.find('.fr-marker')) {
-            this.events.disableBlur();
-            this.selection.restore();
+   
+  }
+  
+  updateText() {
+    // debugger;
+    console.log('update function');
+    if (this.editorData.value !== null) {
+      
+      this.templateText = this.editorData.value.replace(
+        /%(\w+)%/g,
+       
+        (match, field) => {
+          console.log('match' + match + ' ' +'field' + field);
+          const ex = this.fields.find(
+            (f) => f === field
+            // console.log('f ' +f['key'])
+          );
+          if (ex) {
+            console.log('ex '+ex);
           }
-          this.popups.hide('giphyPlugin.popup');
-        }
-      },
-    });
+          console.log('field '+field+ 'match '+match+ 'ex '+ex);
+         
+          return field;
+        });
+     
+      this.templateText.trim();
+      
+    }
+   
+    console.log('templateText ' +`${this.templateText}`);
+    
   }
+  
   save() {
-    console.log(this.myTitle);
+    console.log(this.editorData.value);
   }
-  clear() {
-    this.myTitle = '';
+  clearText() {
+    this.editorData.reset();
+    this.templateText = "";
   }
  
   getButtonText(key){
-    
-      for(var i=0;i<this.fields.length; i++) {
-      var fieldObj = this.fields[i]
-      for (const property in fieldObj) {
-        if(property == key.innerText.toLowerCase()){
-           this.actualValue = fieldObj[property];
-        }
-    
-      }
-
-    }
    
-    this.myTitle = this.myTitle + `${this.actualValue}`;
-
-    console.log(key.name);
-    console.log(this.actualValue);
   
-  }
-
-  // updateText() {if 
-  //   (this.editorData.value !== null) 
-  //   {
-  //     this.templateText = this.editorData.value.replace(/%(\w+)%/g,(match, field) => {const ex = this.selectedTemplate.fieldsAvailable.find((f) => f.key === field);
-  //     if (ex) 
-  //     {
-  //       return ex.example;
-  //     }           
-  //     return match; 
-  //   }); 
-  //     this.templateText.trim();
-  //   }
-  onChange(change){
-    // this.newMyTitle = change;
-
-      }
     
+    this.editorData.setValue(
+      `${
+        this.editorData.value === null ? "" : this.editorData.value
+      } %${key.name}%`
+    );
+ 
+
+
+
+  }
 
 }
